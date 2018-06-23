@@ -1,0 +1,26 @@
+{
+  "env": {
+    "browser": true,
+    "es6": true,
+    "node": true
+  },
+  "extends": "eslint:recommended",
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "ecmaFeatures": {
+      "experimentalObjectRestSpread": true,
+      "jsx": true
+    },
+    "sourceType": "module"
+  },
+  "plugins": ["react"],
+  "parser": "babel-eslint",
+  "rules": {
+    "no-console": 0,
+    "linebreak-style": ["error", "unix"],
+    "quotes": ["error", "single"],
+    "semi": 2,
+    "react/jsx-uses-vars": [2],
+    "react/jsx-uses-react": [2]
+  }
+}
