@@ -80,7 +80,7 @@ class Calendar extends React.PureComponent<Props, State> {
     editorOpen: false
   };
 
-  components = {
+  components: any = {
     event: CalendarEventCell,
     toolbar: CalendarToolbar
   };
@@ -115,9 +115,10 @@ class Calendar extends React.PureComponent<Props, State> {
     this.setState({ date }, () => this.fetchEvents());
   };
 
+  titleAccessor = () => '';
+
   getEventStyle = (event: CalendarEvent) => {
     return {
-      title: null,
       className: 'event',
       style: {
         color: textContrast(event.calendar.color),
@@ -267,6 +268,7 @@ class Calendar extends React.PureComponent<Props, State> {
             showMultiDayTimes
             date={this.state.date}
             onNavigate={this.onNavigate}
+            titleAccessor={this.titleAccessor}
           />
         </div>
         <EventEditor
