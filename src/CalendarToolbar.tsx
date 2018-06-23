@@ -73,7 +73,7 @@ class CalendarToolbar extends React.PureComponent<Props> {
               <Next />
             </IconButton>
             <IconButton
-              disabled={moment().isSame(moment(date), 'month')}
+              disabled={moment().isSame(moment(date), view)}
               onClick={() => onNavigate('TODAY')}
             >
               <Today />
