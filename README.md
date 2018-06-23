@@ -2,7 +2,7 @@
 
 Pure-frontend client for Google Calendar with customisable calendars.
 
-![Screenshot][https://i.imgur.com/NxxFR9R.png]
+![Screenshot](https://i.imgur.com/NxxFR9R.png)
 
 ## Features
 
