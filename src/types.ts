@@ -1,11 +1,11 @@
-export type NewCalendarEvent = {
+export interface NewCalendarEvent {
   start: Date;
   end: Date;
   title: string;
   allDay: boolean;
   description: string;
   calendar: CalendarType;
-};
+}
 
 export interface CalendarEvent extends NewCalendarEvent {
   id: string;
@@ -17,10 +17,10 @@ export interface CalendarEvent extends NewCalendarEvent {
   updated: Date;
 }
 
-export type CalendarConfig = {
+export interface CalendarConfig {
   id: string;
   color: string;
-};
+}
 
 export enum CalendarPermissions {
   FULL,
@@ -28,7 +28,12 @@ export enum CalendarPermissions {
   NONE
 }
 
-export type CalendarType = CalendarConfig & {
+export interface CalendarType extends CalendarConfig {
   title: string;
   permissions: CalendarPermissions;
-};
+}
+
+export interface Config {
+  calendars: Array<CalendarConfig>;
+  title: string;
+}
