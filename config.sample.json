@@ -1,8 +1,9 @@
 {
   "title": "Calendar",
+  "groupDelimiter": "/",
   "calendars": [
     {
-      "id": "calendar-id@gmail.com",
+      "id": "calendarID@gmail.com",
       "color": "#aabbcc"
     }
   ]

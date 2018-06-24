@@ -66,6 +66,7 @@ export default class Root extends React.PureComponent {
 
     return (
       <Calendar
+        groupDelimiter={config.groupDelimiter}
         title={config.title}
         calendars={calendars}
         signOut={this.signOut}

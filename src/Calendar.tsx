@@ -58,6 +58,7 @@ type Props = {
   classes: any;
   calendars: Array<CalendarType>;
   title: string;
+  groupDelimiter: string;
 };
 
 type State = {
@@ -249,6 +250,7 @@ class Calendar extends React.PureComponent<Props, State> {
         <Drawer variant="permanent" classes={{ paper: classes.drawer }}>
           <div className={classes.toolbar} />
           <CalendarSelector
+            groupDelimiter={this.props.groupDelimiter}
             calendars={calendars}
             onSelectionChange={this.onSelectedCalendarsChange}
             selectedIds={this.state.selectedCalendarIds}

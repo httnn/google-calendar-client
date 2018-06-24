@@ -36,4 +36,5 @@ export interface CalendarType extends CalendarConfig {
 export interface Config {
   calendars: Array<CalendarConfig>;
   title: string;
+  groupDelimiter: string;
 }

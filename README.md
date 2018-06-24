@@ -7,6 +7,7 @@ Pure-frontend client for Google Calendar with customisable calendars.
 ## Features
 
 - Define calendars that are displayed, with custom colors
+- Grouping calendars
 - Create, edit and delete events
 - Toggle visibility of calendars
 
@@ -19,6 +20,9 @@ Pure-frontend client for Google Calendar with customisable calendars.
 
 ## TODO
 
-- [ ] more configuration options (branding)
-- [ ] calendar groups
+- [x] more configuration options (branding)
+- [x] calendar groups
 - [ ] optimise fetching events when toggling calendars without changing the view
+- [ ] tests
+- [ ] mobile-friendlier layout
+- [ ] search for events
