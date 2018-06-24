@@ -16,7 +16,6 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 import { Formik } from 'formik';
-import { DatePicker } from 'material-ui';
 
 type Props = {
   date: Date;
@@ -24,7 +23,7 @@ type Props = {
   messages: Object;
   onNavigate(action: any, date?: any): void;
   onViewChange(view: string): void;
-  view: string;
+  view: 'month' | 'week' | 'day';
   views: Array<string>;
   classes: any;
 };

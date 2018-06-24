@@ -57,6 +57,7 @@ type Props = {
   signOut: () => void;
   classes: any;
   calendars: Array<CalendarType>;
+  title: string;
 };
 
 type State = {
@@ -220,7 +221,7 @@ class Calendar extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { classes, signOut, calendars } = this.props;
+    const { classes, signOut, calendars, title } = this.props;
     const { editorOpen, eventBeingEdited, error } = this.state;
 
     return (
@@ -233,7 +234,7 @@ class Calendar extends React.PureComponent<Props, State> {
               color="inherit"
               noWrap
             >
-              Calendar &nbsp;
+              {title} &nbsp;
             </Typography>
             <Fade in={this.state.loading}>
               <CircularProgress size={24} color="secondary" />

@@ -19,7 +19,7 @@ export interface CalendarEvent extends NewCalendarEvent {
 
 export interface CalendarConfig {
   id: string;
-  color: string;
+  color: string; // in hex
 }
 
 export enum CalendarPermissions {

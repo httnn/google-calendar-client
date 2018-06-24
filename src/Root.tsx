@@ -1,10 +1,15 @@
+declare var require: any;
+
 import * as React from 'react';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 
 import * as google from './google';
 import Calendar from './Calendar';
-import * as calendars from '../calendars.json';
+import { Config } from './types';
+const config: Config = require('../config.json');
+
+document.title = config.title;
 
 export default class Root extends React.PureComponent {
   state = { signedIn: false, loading: false, calendars: [] };
@@ -27,7 +32,9 @@ export default class Root extends React.PureComponent {
 
   async componentDidUpdate(prevProps, prevState) {
     if (!prevState.signedIn && this.state.signedIn) {
-      this.setState({ calendars: await google.fetchCalendars(calendars) });
+      this.setState({
+        calendars: await google.fetchCalendars(config.calendars)
+      });
     }
   }
 
@@ -57,6 +64,12 @@ export default class Root extends React.PureComponent {
       );
     }
 
-    return <Calendar calendars={calendars} signOut={this.signOut} />;
+    return (
+      <Calendar
+        title={config.title}
+        calendars={calendars}
+        signOut={this.signOut}
+      />
+    );
   }
 }

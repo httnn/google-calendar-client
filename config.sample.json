@@ -1,0 +1,9 @@
+{
+  "title": "Calendar",
+  "calendars": [
+    {
+      "id": "calendar-id@gmail.com",
+      "color": "#aabbcc"
+    }
+  ]
+}
