@@ -107,8 +107,9 @@ class Calendar extends React.PureComponent<Props, State> {
         c => this.state.hiddenCalendarIds.indexOf(c.id) === -1
       );
       const events = await fetchEvents(calendars, start, end);
-      this.setState({ events, loading: false });
-      this.updateFilteredEvents();
+      this.setState({ events, loading: false, error: null }, () => {
+        this.updateFilteredEvents();
+      });
     } catch (e) {
       this.setState({ loading: false, error: e });
     }
