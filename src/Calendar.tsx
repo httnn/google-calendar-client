@@ -37,7 +37,8 @@ const styles: any = theme => ({
     zIndex: theme.zIndex.drawer + 1
   },
   drawer: {
-    position: 'relative'
+    position: 'relative',
+    minWidth: 250
   },
   content: {
     flexGrow: 1,
@@ -66,7 +67,7 @@ type State = {
   filteredEvents: Array<CalendarEvent>;
   date: Date;
   loading: boolean;
-  selectedCalendarIds: Array<string>;
+  hiddenCalendarIds: Array<string>;
   editorOpen: boolean;
   eventBeingEdited?: NewCalendarEvent;
   error?: Error;
@@ -78,7 +79,7 @@ class Calendar extends React.PureComponent<Props, State> {
     filteredEvents: [],
     date: new Date(),
     loading: false,
-    selectedCalendarIds: [],
+    hiddenCalendarIds: [],
     editorOpen: false
   };
 
@@ -102,9 +103,9 @@ class Calendar extends React.PureComponent<Props, State> {
         .clone()
         .endOf('month')
         .endOf('week');
-      const calendars = this.state.selectedCalendarIds
-        .map(id => this.props.calendars.find(cal => cal.id === id))
-        .filter(c => c);
+      const calendars = this.props.calendars.filter(
+        c => this.state.hiddenCalendarIds.indexOf(c.id) === -1
+      );
       const events = await fetchEvents(calendars, start, end);
       this.setState({ events, loading: false });
       this.updateFilteredEvents();
@@ -149,16 +150,16 @@ class Calendar extends React.PureComponent<Props, State> {
     });
   };
 
-  onSelectedCalendarsChange = selectedCalendarIds => {
-    this.setState({ selectedCalendarIds }, () =>
-      storage.set('selected-calendars', selectedCalendarIds)
+  onHiddenCalendarIdsChange = hiddenCalendarIds => {
+    this.setState({ hiddenCalendarIds }, () =>
+      storage.set('hidden-calendars', hiddenCalendarIds)
     );
   };
 
   updateFilteredEvents = () => {
     this.setState(state => ({
       filteredEvents: state.events.filter(
-        event => state.selectedCalendarIds.indexOf(event.calendar.id) !== -1
+        event => state.hiddenCalendarIds.indexOf(event.calendar.id) === -1
       )
     }));
   };
@@ -166,10 +167,7 @@ class Calendar extends React.PureComponent<Props, State> {
   updateSelectedCalendars = () => {
     this.setState(
       {
-        selectedCalendarIds: storage.get(
-          'selected-calendars',
-          this.props.calendars.map(c => c.id)
-        )
+        hiddenCalendarIds: storage.get('hidden-calendars', [])
       },
       () => this.fetchEvents()
     );
@@ -200,12 +198,12 @@ class Calendar extends React.PureComponent<Props, State> {
   };
 
   componentDidUpdate(prevProps, prevState) {
-    const { events, selectedCalendarIds } = this.state;
+    const { events, hiddenCalendarIds } = this.state;
     if (
       prevState.events !== events ||
-      prevState.selectedCalendarIds !== selectedCalendarIds
+      prevState.hiddenCalendarIds !== hiddenCalendarIds
     ) {
-      if (prevState.selectedCalendarIds.length < selectedCalendarIds.length) {
+      if (prevState.hiddenCalendarIds.length > hiddenCalendarIds.length) {
         this.fetchEvents();
       } else {
         this.updateFilteredEvents();
@@ -252,8 +250,8 @@ class Calendar extends React.PureComponent<Props, State> {
           <CalendarSelector
             groupDelimiter={this.props.groupDelimiter}
             calendars={calendars}
-            onSelectionChange={this.onSelectedCalendarsChange}
-            selectedIds={this.state.selectedCalendarIds}
+            onHiddenCalendarIdsChange={this.onHiddenCalendarIdsChange}
+            hiddenCalendarIds={this.state.hiddenCalendarIds}
           />
         </Drawer>
         <div className={classes.content}>

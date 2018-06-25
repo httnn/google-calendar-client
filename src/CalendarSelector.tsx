@@ -12,8 +12,8 @@ import * as storage from './storage';
 
 type Props = {
   calendars: Array<CalendarType>;
-  onSelectionChange(calendarIds: Array<string>): void;
-  selectedIds: Array<string>;
+  onHiddenCalendarIdsChange(calendarIds: Array<string>): void;
+  hiddenCalendarIds: Array<string>;
   groupDelimiter: string;
 };
 
@@ -37,11 +37,13 @@ export default class CalendarSelector extends React.PureComponent<
   };
 
   toggle = (calendar: CalendarType) => {
-    const { onSelectionChange, selectedIds } = this.props;
-    if (this.props.selectedIds.indexOf(calendar.id) === -1) {
-      onSelectionChange([...selectedIds, calendar.id]);
+    const { onHiddenCalendarIdsChange, hiddenCalendarIds } = this.props;
+    if (hiddenCalendarIds.indexOf(calendar.id) === -1) {
+      onHiddenCalendarIdsChange([...hiddenCalendarIds, calendar.id]);
     } else {
-      onSelectionChange(selectedIds.filter(id => id !== calendar.id));
+      onHiddenCalendarIdsChange(
+        hiddenCalendarIds.filter(id => id !== calendar.id)
+      );
     }
   };
 
@@ -104,16 +106,16 @@ export default class CalendarSelector extends React.PureComponent<
   };
 
   isCalendarSelected = (calendar: CalendarType) =>
-    this.props.selectedIds.indexOf(calendar.id) !== -1;
+    this.props.hiddenCalendarIds.indexOf(calendar.id) === -1;
 
   changeGroupSelection = (group: CalendarGroup, selectAll: boolean) => {
-    const { onSelectionChange, selectedIds } = this.props;
+    const { onHiddenCalendarIdsChange, hiddenCalendarIds } = this.props;
     const calendarIds = this.getGroupCalendars(group).map(cal => cal.id);
     if (selectAll) {
-      onSelectionChange(Array.from(new Set([...selectedIds, ...calendarIds])));
+      onHiddenCalendarIdsChange([]);
     } else {
-      onSelectionChange(
-        selectedIds.filter(id => calendarIds.indexOf(id) === -1)
+      onHiddenCalendarIdsChange(
+        Array.from(new Set([...hiddenCalendarIds, ...calendarIds]))
       );
     }
   };

@@ -1,4 +1,4 @@
-type Key = 'collapsedGroups' | 'selected-calendars';
+type Key = 'collapsedGroups' | 'hidden-calendars';
 
 export const set = (key: Key, value: Object) =>
   localStorage.setItem(key, JSON.stringify(value));
