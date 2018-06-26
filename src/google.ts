@@ -159,10 +159,10 @@ export const toGoogleFormat = (event: CalendarEvent | NewCalendarEvent) => ({
   description: event.description,
   start: event.allDay
     ? { date: moment(event.start).format('YYYY-MM-DD') }
-    : { dateTime: event.start },
+    : { dateTime: moment(event.start).format('YYYY-MM-DDTHH:mm:ssZZ') },
   end: event.allDay
     ? { date: moment(event.end).format('YYYY-MM-DD') }
-    : { dateTime: event.end }
+    : { dateTime: moment(event.end).format('YYYY-MM-DDTHH:mm:ssZZ') }
 });
 
 export const updateEvent = async (

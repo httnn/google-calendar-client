@@ -25,7 +25,7 @@ export type EditorProps = {
   calendars: Array<CalendarType>;
 };
 
-const formatDate = (date: Date, allDay: boolean) =>
+const dateToInputFormat = (date: Date, allDay: boolean) =>
   moment(date).format(
     allDay ? moment.HTML5_FMT.DATE : moment.HTML5_FMT.DATETIME_LOCAL
   );
@@ -107,7 +107,7 @@ export default class EventEditor extends React.PureComponent<EditorProps> {
                   name="start"
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  value={formatDate(values.start, values.allDay)}
+                  value={dateToInputFormat(values.start, values.allDay)}
                   type={values.allDay ? 'date' : 'datetime-local'}
                   fullWidth
                 />
@@ -119,7 +119,7 @@ export default class EventEditor extends React.PureComponent<EditorProps> {
                   name="end"
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  value={formatDate(values.end, values.allDay)}
+                  value={dateToInputFormat(values.end, values.allDay)}
                   type={values.allDay ? 'date' : 'datetime-local'}
                   fullWidth
                 />
