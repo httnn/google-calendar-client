@@ -79,12 +79,14 @@ class CalendarToolbar extends React.PureComponent<Props> {
               <Next />
             </IconButton>
             <Tooltip title="Jump to today">
-              <IconButton
-                disabled={moment().isSame(moment(date), view)}
-                onClick={() => onNavigate('TODAY')}
-              >
-                <Today />
-              </IconButton>
+              <div>
+                <IconButton
+                  disabled={moment().isSame(moment(date), view)}
+                  onClick={() => onNavigate('TODAY')}
+                >
+                  <Today />
+                </IconButton>
+              </div>
             </Tooltip>
             <Tooltip title="Create event">
               <IconButton onClick={this.props.onCreateEvent}>
