@@ -167,8 +167,16 @@ export const toGoogleFormat = (event: CalendarEvent | NewCalendarEvent) => ({
 
 export const updateEvent = async (
   event: CalendarEvent,
+  previousCalendar: CalendarType | null,
   calendars: Array<CalendarType>
 ) => {
+  if (previousCalendar.id) {
+    await gapi.client.calendar.events.move({
+      calendarId: previousCalendar.id,
+      eventId: event.id,
+      destination: event.calendar.id
+    });
+  }
   const response = await gapi.client.calendar.events.update(
     toGoogleFormat(event)
   );

@@ -34,8 +34,12 @@ export default class EventEditor extends React.PureComponent<EditorProps> {
   submit = async (values, { setSubmitting, setStatus }) => {
     try {
       if ('id' in this.props.event) {
+        const initialEvent = this.props.event;
         const event = await updateEvent(
-          { ...this.props.event, ...values },
+          { ...initialEvent, ...values },
+          initialEvent.calendar.id !== values.calendar.id
+            ? initialEvent.calendar
+            : null,
           this.props.calendars
         );
         this.props.onClose('updated', event);
