@@ -9,12 +9,16 @@ import IconButton from '@material-ui/core/IconButton';
 import Next from '@material-ui/icons/NavigateNext';
 import Prev from '@material-ui/icons/NavigateBefore';
 import Today from '@material-ui/icons/Today';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Fade from '@material-ui/core/Fade';
+import Create from '@material-ui/icons/Create';
 import { withStyles } from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
+import Tooltip from '@material-ui/core/Tooltip';
 import { Formik } from 'formik';
 
 type Props = {
@@ -26,6 +30,8 @@ type Props = {
   view: 'month' | 'week' | 'day';
   views: Array<string>;
   classes: any;
+  onCreateEvent: () => void;
+  loading: boolean;
 };
 
 class CalendarToolbar extends React.PureComponent<Props> {
@@ -48,7 +54,8 @@ class CalendarToolbar extends React.PureComponent<Props> {
       label,
       onViewChange,
       views,
-      view
+      view,
+      loading
     } = this.props;
 
     return (
@@ -71,12 +78,22 @@ class CalendarToolbar extends React.PureComponent<Props> {
             <IconButton onClick={() => onNavigate('NEXT')}>
               <Next />
             </IconButton>
-            <IconButton
-              disabled={moment().isSame(moment(date), view)}
-              onClick={() => onNavigate('TODAY')}
-            >
-              <Today />
-            </IconButton>
+            <Tooltip title="Jump to today">
+              <IconButton
+                disabled={moment().isSame(moment(date), view)}
+                onClick={() => onNavigate('TODAY')}
+              >
+                <Today />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Create event">
+              <IconButton onClick={this.props.onCreateEvent}>
+                <Create />
+              </IconButton>
+            </Tooltip>
+            <Fade in={loading}>
+              <CircularProgress size={24} color="secondary" />
+            </Fade>
           </Grid>
           <Grid item>
             <Tabs value={view} onChange={(e, value) => onViewChange(value)}>

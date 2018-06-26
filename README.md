@@ -22,6 +22,7 @@ Pure-frontend client for Google Calendar with customisable calendars.
 
 - [x] more configuration options (branding)
 - [x] calendar groups
+- [ ] routing via URL
 - [ ] optimise fetching events when toggling calendars without changing the view
 - [ ] tests
 - [ ] mobile-friendlier layout

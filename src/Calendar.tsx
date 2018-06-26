@@ -2,8 +2,6 @@ import * as React from 'react';
 import * as BigCalendar from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import * as moment from 'moment';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Fade from '@material-ui/core/Fade';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -83,11 +81,6 @@ class Calendar extends React.PureComponent<Props, State> {
     editorOpen: false
   };
 
-  components: any = {
-    event: CalendarEventCell,
-    toolbar: CalendarToolbar
-  };
-
   async fetchEvents() {
     if (!this.props.calendars.length) {
       return;
@@ -150,6 +143,19 @@ class Calendar extends React.PureComponent<Props, State> {
       editorOpen: true
     });
   };
+
+  createEvent = () =>
+    this.setState({
+      editorOpen: true,
+      eventBeingEdited: {
+        title: '',
+        description: '',
+        calendar: this.props.calendars[0],
+        start: new Date(),
+        end: new Date(),
+        allDay: true
+      }
+    });
 
   onHiddenCalendarIdsChange = hiddenCalendarIds => {
     this.setState({ hiddenCalendarIds }, () =>
@@ -222,7 +228,7 @@ class Calendar extends React.PureComponent<Props, State> {
 
   render() {
     const { classes, signOut, calendars, title } = this.props;
-    const { editorOpen, eventBeingEdited, error } = this.state;
+    const { editorOpen, eventBeingEdited, error, loading } = this.state;
 
     return (
       <div className={classes.root}>
@@ -236,9 +242,6 @@ class Calendar extends React.PureComponent<Props, State> {
             >
               {title} &nbsp;
             </Typography>
-            <Fade in={this.state.loading}>
-              <CircularProgress size={24} color="secondary" />
-            </Fade>
             <div style={{ flex: 1 }} />
             <Typography color="inherit">{getUserEmail()}</Typography>
             <Button color="inherit" onClick={signOut}>
@@ -260,7 +263,16 @@ class Calendar extends React.PureComponent<Props, State> {
           {error && <Typography color="error">{error.message}</Typography>}
           <BigCalendar
             selectable
-            components={this.components}
+            components={{
+              event: CalendarEventCell,
+              toolbar: props => (
+                <CalendarToolbar
+                  {...props}
+                  loading={loading}
+                  onCreateEvent={this.createEvent}
+                />
+              )
+            }}
             eventPropGetter={this.getEventStyle}
             events={this.state.filteredEvents}
             views={views}

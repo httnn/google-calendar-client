@@ -160,25 +160,38 @@ export default class EventEditor extends React.PureComponent<EditorProps> {
             )}
           </DialogContent>
           <DialogActions>
-            {editing && (
-              <Button onClick={this.delete} color="secondary" variant="raised">
-                Delete
-              </Button>
-            )}
-            <Button onClick={this.close} color="secondary" variant="raised">
-              Cancel
-            </Button>
-            <Button onClick={handleReset} type="reset">
-              Reset
-            </Button>
-            <Button
-              color="primary"
-              variant="raised"
-              disabled={isSubmitting || !dirty}
-              type="submit"
-            >
-              {editing ? 'Save' : 'Create'}
-            </Button>
+            <Grid container>
+              <Grid item>
+                {editing && (
+                  <Button
+                    onClick={this.delete}
+                    color="secondary"
+                    variant="raised"
+                  >
+                    Delete
+                  </Button>
+                )}
+                <Button
+                  disabled={isSubmitting || !dirty}
+                  onClick={handleReset}
+                  type="reset"
+                >
+                  Reset
+                </Button>
+              </Grid>
+              <Grid item md />
+              <Grid item>
+                <Button onClick={this.close}>Cancel</Button>
+                <Button
+                  color="primary"
+                  variant="raised"
+                  disabled={isSubmitting || !dirty}
+                  type="submit"
+                >
+                  {editing ? 'Save' : 'Create'}
+                </Button>
+              </Grid>
+            </Grid>
           </DialogActions>
         </form>
       </Dialog>
