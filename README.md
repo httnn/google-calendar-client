@@ -18,6 +18,10 @@ Pure-frontend client for Google Calendar with customisable calendars.
 3.  Create a file at the root level called `config.json`. The type of the contents should be like [this](https://github.com/bodyflex/google-calendar-client/blob/master/src/types.ts#L36-L39). `config.sample.json` serves as a starting point.
 4.  Run `yarn install` and `yarn start`.
 
+## How does grouping work
+
+Groups are formed automatically from calendar names with respect to the `groupDelimiter` string defined in config. Groups can be nested without a limit on group depth, although the UI might become a bit cluttered at some point.
+
 ## TODO
 
 - [x] more configuration options (branding)
