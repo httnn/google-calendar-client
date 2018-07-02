@@ -25,6 +25,8 @@
     "react": "^16.4.1",
     "react-big-calendar": "^0.19.1",
     "react-dom": "^16.4.1",
+    "react-router": "^4.3.1",
+    "react-router-dom": "^4.3.1",
     "style-loader": "^0.21.0",
     "ts-loader": "^4.4.1",
     "typescript": "^2.9.2",

@@ -37,4 +37,5 @@ export interface Config {
   calendars: Array<CalendarConfig>;
   title: string;
   groupDelimiter: string;
+  useRouter: boolean;
 }

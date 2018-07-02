@@ -1,6 +1,7 @@
 {
   "title": "Calendar",
   "groupDelimiter": "/",
+  "useRouter": false,
   "calendars": [
     {
       "id": "calendarID@gmail.com",

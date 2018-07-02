@@ -2,118 +2,30 @@ import * as React from 'react';
 import * as BigCalendar from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import * as moment from 'moment';
-import Drawer from '@material-ui/core/Drawer';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
-import { withStyles } from '@material-ui/core/styles';
 import 'moment/locale/en-gb';
 
-import * as storage from './storage';
-import { fetchEvents, getUserEmail } from './google';
-import CalendarSelector from './CalendarSelector';
-import { CalendarEvent, CalendarType, NewCalendarEvent } from './types';
+import { CalendarEvent } from './types';
 import CalendarEventCell from './CalendarEvent';
 import { textContrast } from './utils';
-import EventEditor, { EditorProps } from './EventEditor';
-import CalendarToolbar from './CalendarToolbar';
+import 'moment/locale/en-gb';
 
 moment.locale('en-gb');
 BigCalendar.momentLocalizer(moment);
 
-const styles: any = theme => ({
-  root: {
-    flexGrow: 1,
-    zIndex: 1,
-    overflow: 'hidden',
-    position: 'relative',
-    display: 'flex',
-    height: '100%'
-  },
-  appBar: {
-    zIndex: theme.zIndex.drawer + 1
-  },
-  drawer: {
-    position: 'relative',
-    minWidth: 250
-  },
-  content: {
-    flexGrow: 1,
-    backgroundColor: theme.palette.background.default,
-    padding: theme.spacing.unit * 3,
-    height: '100%',
-    boxSizing: 'border-box',
-    display: 'flex',
-    flexDirection: 'column'
-  },
-  toolbar: theme.mixins.toolbar
-});
-
 const views = ['month', 'week', 'day'];
 
 type Props = {
-  signOut: () => void;
-  classes: any;
-  calendars: Array<CalendarType>;
-  title: string;
-  groupDelimiter: string;
-};
-
-type State = {
+  toolbar: any;
+  onDateChange(Date): void;
   events: Array<CalendarEvent>;
-  filteredEvents: Array<CalendarEvent>;
+  onSelect(params: { start: Date; end: Date; allDay: boolean }): void;
+  onEventClick(event: CalendarEvent): void;
   date: Date;
-  loading: boolean;
-  hiddenCalendarIds: Array<string>;
-  editorOpen: boolean;
-  eventBeingEdited?: NewCalendarEvent;
-  error?: Error;
+  view: string;
+  onViewChange(view: string): void;
 };
 
-class Calendar extends React.PureComponent<Props, State> {
-  state: State = {
-    events: [],
-    filteredEvents: [],
-    date: new Date(),
-    loading: false,
-    hiddenCalendarIds: [],
-    editorOpen: false
-  };
-
-  async fetchEvents() {
-    if (!this.props.calendars.length) {
-      return;
-    }
-    try {
-      this.setState({ loading: true });
-      const now = moment(this.state.date);
-      const start = now
-        .clone()
-        .startOf('month')
-        .startOf('week');
-      const end = now
-        .clone()
-        .endOf('month')
-        .endOf('week');
-      const calendars = this.props.calendars.filter(
-        c => this.state.hiddenCalendarIds.indexOf(c.id) === -1
-      );
-      const events = await fetchEvents(calendars, start, end);
-      this.setState({ events, loading: false, error: null }, () => {
-        this.updateFilteredEvents();
-      });
-    } catch (e) {
-      this.setState({ loading: false, error: e });
-    }
-  }
-
-  onNavigate = date => {
-    this.setState({ date }, () => this.fetchEvents());
-  };
-
-  titleAccessor = () => '';
-
+class Calendar extends React.PureComponent<Props> {
   getEventStyle = (event: CalendarEvent) => {
     return {
       className: 'event',
@@ -124,176 +36,53 @@ class Calendar extends React.PureComponent<Props, State> {
     };
   };
 
+  onNavigate = date => {
+    this.props.onDateChange(date);
+  };
+
   selectSlot = ({ start, end }) => {
     const allDay =
       moment(start).format('HH:mm:ss') === moment(end).format('HH:mm:ss');
-    this.setState({
-      eventBeingEdited: {
-        title: '',
-        description: '',
-        calendar: this.props.calendars[0],
-        start,
-        end: allDay
-          ? moment(end)
-              .add({ days: 1 })
-              .toDate()
-          : end,
-        allDay
-      },
-      editorOpen: true
-    });
-  };
-
-  createEvent = () =>
-    this.setState({
-      editorOpen: true,
-      eventBeingEdited: {
-        title: '',
-        description: '',
-        calendar: this.props.calendars[0],
-        start: new Date(),
-        end: new Date(),
-        allDay: true
-      }
-    });
-
-  onHiddenCalendarIdsChange = hiddenCalendarIds => {
-    this.setState({ hiddenCalendarIds }, () =>
-      storage.set('hidden-calendars', hiddenCalendarIds)
-    );
-  };
-
-  updateFilteredEvents = () => {
-    this.setState(state => ({
-      filteredEvents: state.events.filter(
-        event => state.hiddenCalendarIds.indexOf(event.calendar.id) === -1
-      )
-    }));
-  };
-
-  updateSelectedCalendars = () => {
-    this.setState(
-      {
-        hiddenCalendarIds: storage.get('hidden-calendars', [])
-      },
-      () => this.fetchEvents()
-    );
-  };
-
-  closeEditor: EditorProps['onClose'] = (action, event) => {
-    this.setState(state => {
-      let events = state.events;
-      if (event) {
-        events = [...events];
-        if (action === 'updated' || action === 'deleted') {
-          const index = events.findIndex(e => e.id === event.id);
-          if (action === 'updated') {
-            events[index] = event;
-          } else {
-            events.splice(index, 1);
-          }
-        } else if (action === 'created') {
-          events.push(event);
-        }
-      }
-      return { editorOpen: false, events };
+    this.props.onSelect({
+      start,
+      end: allDay
+        ? moment(end)
+            .add({ days: 1 })
+            .toDate()
+        : end,
+      allDay
     });
   };
 
   editEvent = (event: CalendarEvent) => {
-    this.setState({ editorOpen: true, eventBeingEdited: event });
+    this.props.onEventClick(event);
   };
 
-  componentDidUpdate(prevProps, prevState) {
-    const { events, hiddenCalendarIds } = this.state;
-    if (
-      prevState.events !== events ||
-      prevState.hiddenCalendarIds !== hiddenCalendarIds
-    ) {
-      if (prevState.hiddenCalendarIds.length > hiddenCalendarIds.length) {
-        this.fetchEvents();
-      } else {
-        this.updateFilteredEvents();
-      }
-    }
-
-    if (prevProps.calendars !== this.props.calendars) {
-      this.updateSelectedCalendars();
-    }
-  }
-
-  componentDidMount() {
-    this.updateSelectedCalendars();
-  }
+  titleAccessor = () => '';
 
   render() {
-    const { classes, signOut, calendars, title } = this.props;
-    const { editorOpen, eventBeingEdited, error, loading } = this.state;
-
     return (
-      <div className={classes.root}>
-        <AppBar className={classes.appBar}>
-          <Toolbar>
-            <Typography
-              style={{ fontFamily: 'Product Sans' }}
-              variant="title"
-              color="inherit"
-              noWrap
-            >
-              {title} &nbsp;
-            </Typography>
-            <div style={{ flex: 1 }} />
-            <Typography color="inherit">{getUserEmail()}</Typography>
-            <Button color="inherit" onClick={signOut}>
-              Log out
-            </Button>
-          </Toolbar>
-        </AppBar>
-        <Drawer variant="permanent" classes={{ paper: classes.drawer }}>
-          <div className={classes.toolbar} />
-          <CalendarSelector
-            groupDelimiter={this.props.groupDelimiter}
-            calendars={calendars}
-            onHiddenCalendarIdsChange={this.onHiddenCalendarIdsChange}
-            hiddenCalendarIds={this.state.hiddenCalendarIds}
-          />
-        </Drawer>
-        <div className={classes.content}>
-          <div className={classes.toolbar} />
-          {error && <Typography color="error">{error.message}</Typography>}
-          <BigCalendar
-            selectable
-            components={{
-              event: CalendarEventCell,
-              toolbar: props => (
-                <CalendarToolbar
-                  {...props}
-                  loading={loading}
-                  onCreateEvent={this.createEvent}
-                />
-              )
-            }}
-            eventPropGetter={this.getEventStyle}
-            events={this.state.filteredEvents}
-            views={views}
-            onSelectSlot={this.selectSlot}
-            onSelectEvent={this.editEvent}
-            step={60}
-            showMultiDayTimes
-            date={this.state.date}
-            onNavigate={this.onNavigate}
-            titleAccessor={this.titleAccessor}
-          />
-        </div>
-        <EventEditor
-          calendars={calendars}
-          open={editorOpen}
-          onClose={this.closeEditor}
-          event={eventBeingEdited}
-        />
-      </div>
+      <BigCalendar
+        selectable
+        components={{
+          event: CalendarEventCell,
+          toolbar: this.props.toolbar
+        }}
+        eventPropGetter={this.getEventStyle}
+        events={this.props.events}
+        views={views}
+        onSelectSlot={this.selectSlot}
+        onSelectEvent={this.editEvent}
+        step={60}
+        showMultiDayTimes
+        date={this.props.date}
+        onView={this.props.onViewChange}
+        view={this.props.view || 'month'}
+        onNavigate={this.onNavigate}
+        titleAccessor={this.titleAccessor}
+      />
     );
   }
 }
 
-export default withStyles(styles)(Calendar);
+export default Calendar;

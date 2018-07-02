@@ -1,17 +1,20 @@
 declare var require: any;
 
 import * as React from 'react';
+import * as ReactDOM from 'react-dom';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
+import { BrowserRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router';
 
 import * as google from './google';
-import Calendar from './Calendar';
+import App from './App';
 import { Config } from './types';
 const config: Config = require('../config.json');
 
 document.title = config.title;
 
-export default class Root extends React.PureComponent {
+export default class Root extends React.Component {
   state = { signedIn: false, loading: false, calendars: [] };
 
   init = async () => {
@@ -65,7 +68,7 @@ export default class Root extends React.PureComponent {
     }
 
     return (
-      <Calendar
+      <App
         groupDelimiter={config.groupDelimiter}
         title={config.title}
         calendars={calendars}
@@ -74,3 +77,12 @@ export default class Root extends React.PureComponent {
     );
   }
 }
+
+const Router = config.useRouter ? BrowserRouter : MemoryRouter;
+
+ReactDOM.render(
+  <Router>
+    <Root />
+  </Router>,
+  document.querySelector('main')
+);

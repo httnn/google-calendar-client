@@ -26,7 +26,7 @@ Groups are formed automatically from calendar names with respect to the `groupDe
 
 - [x] more configuration options (branding)
 - [x] calendar groups
-- [ ] routing via URL
+- [x] optional routing via URL
 - [ ] optimise fetching events when toggling calendars without changing the view
 - [ ] tests
 - [ ] mobile-friendlier layout
